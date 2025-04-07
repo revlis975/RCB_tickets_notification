@@ -1,11 +1,9 @@
 {
     "build": {
-      "env": {
-        "PYTHONUNBUFFERED": "1"
-      }
+      "dockerfilePath": "Dockerfile",
+      "context": "."
     },
     "deploy": {
       "startCommand": "python main.py"
     }
-  }
-  
+}  
