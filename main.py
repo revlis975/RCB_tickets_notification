@@ -23,6 +23,8 @@ def check_tickets():
             if "May" in text:
                 message = "May Tickets Available!\nLogin to https://shop.royalchallengers.com/ticket and get yours now!"
                 send_telegram_message(message)
+            else:
+                send_telegram_message("May tickets not out yet")
 
         browser.close()
 
