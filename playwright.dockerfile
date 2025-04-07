@@ -1,29 +1,26 @@
-# Use official Python image
 FROM python:3.11-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Avoid prompts from tzdata
+ENV DEBIAN_FRONTEND=noninteractive
 
-# Set workdir
+# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    wget gnupg ca-certificates fonts-liberation libnss3 libxss1 libasound2 libatk-bridge2.0-0 \
-    libgtk-3-0 libx11-xcb1 libxcb1 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libpango-1.0-0 \
-    libpangocairo-1.0-0 libxext6 libxfixes3 libxi6 libxtst6 libwayland-client0 libwayland-cursor0 \
-    libwayland-egl1 libcurl4 tzdata unzip
+# System dependencies for Playwright
+RUN apt-get update && apt-get install -y wget gnupg ca-certificates \
+    libnss3 libatk-bridge2.0-0 libxss1 libasound2 libx11-xcb1 \
+    libxcomposite1 libxdamage1 libxrandr2 libgbm1 libgtk-3-0 \
+    libpango-1.0-0 libpangocairo-1.0-0 fonts-liberation libxext6 \
+    libxfixes3 libxi6 libxtst6 libcurl4 unzip curl && apt-get clean
 
-# Install Python dependencies
+# Copy and install Python dependencies
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Install Playwright browsers
-RUN pip install playwright && playwright install --with-deps
+RUN python -m playwright install --with-deps
 
-# Copy project
+# Copy the rest of the code
 COPY . .
 
-# Run your script (replace with your actual script)
 CMD ["python", "main.py"]
