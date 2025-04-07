@@ -20,8 +20,8 @@ def check_tickets():
         elements = page.query_selector_all(".chakra-text.css-1nm99ps")
         for el in elements:
             text = el.inner_text()
-            if "Apr" in text:
-                message = "April Tickets Available!\nLogin to https://shop.royalchallengers.com/ticket and get yours now!"
+            if "May" in text:
+                message = "May Tickets Available!\nLogin to https://shop.royalchallengers.com/ticket and get yours now!"
                 send_telegram_message(message)
 
         browser.close()
