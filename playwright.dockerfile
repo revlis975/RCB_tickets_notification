@@ -1,28 +1,13 @@
-FROM debian:bullseye
+FROM mcr.microsoft.com/playwright/python:v1.35.0-jammy
 
-# Avoid tzdata prompts
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install system deps
-RUN apt-get update && apt-get install -y \
-    curl wget gnupg unzip python3 python3-pip python3-venv \
-    libnss3 libatk-bridge2.0-0 libxss1 libasound2 libx11-xcb1 \
-    libxcomposite1 libxdamage1 libxrandr2 libgbm1 libgtk-3-0 \
-    libpango-1.0-0 libpangocairo-1.0-0 fonts-liberation libxext6 \
-    libxfixes3 libxi6 libxtst6 libcurl4 ca-certificates && apt-get clean
-
-# Set working directory
+# Set work directory
 WORKDIR /app
 
-# Install Python dependencies
+# Copy files
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install compatible Playwright version + deps
-RUN python3 -m playwright install --with-deps
-
-# Copy code
 COPY . .
 
-# Run app
-CMD ["python3", "main.py"]
+# Run script
+CMD ["python", "main.py"]
