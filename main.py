@@ -21,7 +21,7 @@ def check_tickets():
         for el in elements:
             text = el.inner_text()
             if "Apr" in text:
-                message = "April Tickets Available!\n"
+                message = "April Tickets Available!\nLogin to https://shop.royalchallengers.com/ticket and get yours now!"
                 send_telegram_message(message)
 
         browser.close()
