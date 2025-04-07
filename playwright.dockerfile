@@ -1,26 +1,28 @@
-FROM python:3.11-slim
+FROM debian:bullseye
 
-# Avoid prompts from tzdata
+# Avoid tzdata prompts
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Install system deps
+RUN apt-get update && apt-get install -y \
+    curl wget gnupg unzip python3 python3-pip python3-venv \
+    libnss3 libatk-bridge2.0-0 libxss1 libasound2 libx11-xcb1 \
+    libxcomposite1 libxdamage1 libxrandr2 libgbm1 libgtk-3-0 \
+    libpango-1.0-0 libpangocairo-1.0-0 fonts-liberation libxext6 \
+    libxfixes3 libxi6 libxtst6 libcurl4 ca-certificates && apt-get clean
 
 # Set working directory
 WORKDIR /app
 
-# System dependencies for Playwright
-RUN apt-get update && apt-get install -y wget gnupg ca-certificates \
-    libnss3 libatk-bridge2.0-0 libxss1 libasound2 libx11-xcb1 \
-    libxcomposite1 libxdamage1 libxrandr2 libgbm1 libgtk-3-0 \
-    libpango-1.0-0 libpangocairo-1.0-0 fonts-liberation libxext6 \
-    libxfixes3 libxi6 libxtst6 libcurl4 unzip curl && apt-get clean
-
-# Copy and install Python dependencies
+# Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Install Playwright browsers
-RUN python -m playwright install --with-deps
+# Install compatible Playwright version + deps
+RUN python3 -m playwright install --with-deps
 
-# Copy the rest of the code
+# Copy code
 COPY . .
 
-CMD ["python", "main.py"]
+# Run app
+CMD ["python3", "main.py"]
