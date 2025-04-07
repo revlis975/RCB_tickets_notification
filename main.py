@@ -1,12 +1,10 @@
 import time
 import requests
 from playwright.sync_api import sync_playwright
+import os
 
-# RCB tickets booking page URL
-rcb_tickets_page_url = "https://shop.royalchallengers.com/ticket"
-
-BOT_TOKEN = "7935296753:AAGQjFN96Dte9altLNcRm2Er1DeLxjWDJpM"
-CHAT_ID = "960883451"
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
 
 def send_telegram_message(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -18,10 +16,8 @@ def check_tickets():
         browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
         page = browser.new_page()
         page.goto("https://shop.royalchallengers.com/ticket", timeout=60000)
-        page.wait_for_timeout(5000)  # Wait 5 seconds for JS to load
-
+        page.wait_for_timeout(5000)  
         elements = page.query_selector_all(".chakra-text.css-1nm99ps")
-        print('here')
         for el in elements:
             text = el.inner_text()
             if "Apr" in text:
@@ -36,7 +32,7 @@ def check_loop():
             check_tickets()
         except Exception as e:
             send_telegram_message(f"Error: {str(e)}")
-        time.sleep(300)  # Check every 5 minutes
+        time.sleep(300)
 
 if __name__ == '__main__':
     check_loop()
